@@ -118,7 +118,7 @@ describe('parser', () => {
     })
 
     it('parses ctl.add correctly', (done) => {
-      ctl.add(dirPath, { recursive: true, followSymlinks: false }, (err, res) => {
+      ctl.addFromFs(dirPath, { recursive: true, followSymlinks: false }, (err, res) => {
         expect(err).to.not.exist
 
         expect(files.length).to.equal(3)
