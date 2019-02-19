@@ -10,6 +10,9 @@ const path = require('path')
 const fs = require('fs')
 const request = require('request')
 const IPFSMultipart = require('..')
+const os = require('os')
+
+const isWindows = os.platform() === 'win32'
 
 describe('parser', () => {
   const PORT = 6001
@@ -120,6 +123,17 @@ describe('parser', () => {
     it('parses ctl.add correctly', (done) => {
       ctl.add(dirPath, { recursive: true, followSymlinks: false }, (err, res) => {
         expect(err).to.not.exist
+
+        if (isWindows) {
+          console.log(files)
+          expect(files.length).to.equal(5)
+          expect(files[0].fileName).to.equal('fixtures/config')
+          expect(files[1].fileName).to.equal('fixtures/otherfile')
+          expect(files[2].fileName).to.equal('fixtures/subfolder/deepfile')
+          expect(files[3].fileName).to.equal('fixtures/folderlink')
+          expect(files[4].fileName).to.equal('fixtures/link')
+          return done()
+        }
 
         expect(files.length).to.equal(3)
         expect(files[0].fileName).to.equal('fixtures/config')
