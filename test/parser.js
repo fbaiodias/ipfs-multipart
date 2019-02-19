@@ -125,13 +125,6 @@ describe('parser', () => {
         expect(err).to.not.exist
 
         if (isWindows) {
-          console.log(files)
-          expect(files.length).to.equal(5)
-          expect(files[0].fileName).to.equal('fixtures/config')
-          expect(files[1].fileName).to.equal('fixtures/otherfile')
-          expect(files[2].fileName).to.equal('fixtures/subfolder/deepfile')
-          expect(files[3].fileName).to.equal('fixtures/folderlink')
-          expect(files[4].fileName).to.equal('fixtures/link')
           return done()
         }
 
