@@ -32,7 +32,7 @@
   "devDependencies": {
     "aegir": "^20.0.0",
     "chai": "^4.2.0",
-    "ipfs-api": "github:ipfs/js-ipfs-api#1fd9749",
+    "ipfs-api": "^26.1.2",
     "request": "^2.88.0"
   },
   "engines": {
