@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <title>ipfs-multipart 0.1.1 | Documentation</title>
+  <meta name='description' content='A set of utilities to help dealing with IPFS multipart.'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' rel='stylesheet'>
+  <link href='assets/style.css' rel='stylesheet'>
+  <link href='assets/github.css' rel='stylesheet'>
+  <link href='assets/split.css' rel='stylesheet'>
+</head>
+<body class='documentation m0'>
+    <div class='flex'>
+      <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
+        <div class='py1 px2'>
+          <h3 class='mb0 no-anchor'>ipfs-multipart</h3>
+          <div class='mb1'><code>0.1.1</code></div>
+          <input
+            placeholder='Filter'
+            id='filter-input'
+            class='col12 block input'
+            type='text' />
+          <div id='toc'>
+            <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#intro'
+                  class="h5 bold black caps">
+                  Intro
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#reqparser'
+                  class="">
+                  reqParser
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#parser'
+                  class="">
+                  Parser
+                  
+                </a>
+                
+                </li>
+              
+            </ul>
+          </div>
+          <div class='mt1 h6 quiet'>
+            <a href='https://documentation.js.org/reading-documentation.html'>Need help reading this?</a>
+          </div>
+        </div>
+      </div>
+      <div id='split-right' class='relative overflow-auto height-viewport-100'>
+        
+          
+            <div class='keyline-top-not py2'><section class='py2 clearfix'>
+
+  <h2 id='intro' class='mt0'>
+    Intro
+  </h2>
+
+  
+    <p>Installable via  <code>npm install --save ipfs-multipart</code>, it can also be used directly in the browser.</p>
+<h2>Quick Example</h2>
+<pre class='hljs'><span class="hljs-meta">'use strict'</span>
+
+<span class="hljs-comment">/* eslint-disable no-console */</span>
+
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)
+<span class="hljs-keyword">const</span> IPFSMultipart = <span class="hljs-built_in">require</span>(<span class="hljs-string">'.'</span>)
+
+http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (req.method === <span class="hljs-string">'POST'</span> &amp;&amp; req.headers[<span class="hljs-string">'content-type'</span>]) {
+    <span class="hljs-keyword">const</span> parser = IPFSMultipart.reqParser(req)
+
+    parser.on(<span class="hljs-string">'file'</span>, (fileName, fileStream) =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`file <span class="hljs-subst">${fileName}</span> start`</span>)
+
+      fileStream.on(<span class="hljs-string">'data'</span>, (data) =&gt; {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`file <span class="hljs-subst">${fileName}</span> contents:`</span>, data.toString())
+      })
+
+      fileStream.on(<span class="hljs-string">'end'</span>, (data) =&gt; {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`file <span class="hljs-subst">${fileName}</span> end`</span>)
+      })
+    })
+
+    parser.on(<span class="hljs-string">'end'</span>, () =&gt; {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'finished parsing'</span>)
+      res.writeHead(<span class="hljs-number">200</span>)
+      res.end()
+    })
+
+    <span class="hljs-keyword">return</span>
+  }
+
+  res.writeHead(<span class="hljs-number">404</span>)
+  res.end()
+}).listen(<span class="hljs-number">5001</span>, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server listening on port 5001'</span>)
+})</pre>
+<p>There are more available, so take a look at the docs below for a full list. This documentation aims to be comprehensive, so if you feel anything is missing please create a GitHub issue for it.</p>
+<h2>Download</h2>
+<p>The source is available for download from <a href="undefined">GitHub</a>. Alternatively, you can install using npm:</p>
+<pre class='hljs'>$ npm install --save ipfs-multipart</pre>
+<p>You can then <code>require()</code> ipfs-multipart as normal:</p>
+<pre class='hljs'><span class="hljs-keyword">const</span> ipfsMultipart = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ipfs-multipart'</span>)</pre>
+<h2>In the Browser</h2>
+<p>Ipfs-multipart should work in any ES2015 environment out of the box.</p>
+<p>Usage:</p>
+<pre class='hljs'><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"index.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></pre>
+<p>The portable versions of ipfs-multipart, including <code>index.js</code> and <code>index.min.js</code>, are included in the <code>/dist</code> folder. Ipfs-multipart can also be found on <a href="https://unpkg.com">unpkg.com</a> under</p>
+<ul>
+<li><a href="https://unpkg.com/ipfs-multipart/dist/index.min.js">https://unpkg.com/ipfs-multipart/dist/index.min.js</a></li>
+<li><a href="https://unpkg.com/ipfs-multipart/dist/index.js">https://unpkg.com/ipfs-multipart/dist/index.js</a></li>
+</ul>
+
+  
+</section></div>
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='reqparser'>
+      reqParser
+    </h3>
+    
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/ipfs-multipart/blob/edc2f725fcaabd65d2d4f443997971bede60501f/src/index.js#L14-L19'>
+      <span>src/index.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>Request Parser</p>
+
+    <div class='pre p1 fill-light mt0'>reqParser(req: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="#parser">Parser</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>req</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    Request
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#parser">Parser</a></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='parser'>
+      Parser
+    </h3>
+    
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/ipfs/ipfs-multipart/blob/edc2f725fcaabd65d2d4f443997971bede60501f/src/parser.js#L45-L63'>
+      <span>src/parser.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>Parser</p>
+
+    <div class='pre p1 fill-light mt0'>new Parser(options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="#parser">Parser</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#parser">Parser</a></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+      </div>
+    </div>
+  <script src='assets/anchor.js'></script>
+  <script src='assets/split.js'></script>
+  <script src='assets/site.js'></script>
+</body>
+</html>
