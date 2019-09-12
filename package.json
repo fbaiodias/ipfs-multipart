@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@hapi/content": "^4.1.0",
-    "it-multipart": "~0.0.2"
+    "it-multipart": "~1.0.0"
   },
   "devDependencies": {
     "aegir": "^20.0.0",
