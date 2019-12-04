@@ -111,12 +111,27 @@ describe('parser', () => {
 
     it('parses regular multipart requests correctly', (done) => {
       const formData = {
-        mtime: fileMtime,
-        mode: fileMode,
         file: fs.createReadStream(filePath)
       }
 
       request.post({ url: `http://localhost:${PORT}`, formData: formData }, (err) => done(err))
+    })
+
+    it('parses multipart requests with metatdata correctly', (done) => {
+      const r = request.post({ url: `http://localhost:${PORT}` }, (err) => done(err))
+
+      // request uses an old version of form-data so this is clunky
+      const CRLF = '\r\n'
+      const form = r.form()
+      form.append('file', fileContent, {
+        header: [
+          `--${form.getBoundary()}`,
+          'content-type: application/octet-stream',
+          'content-disposition: form-data; filename="file.txt"; name="file"',
+          `mtime: ${fileMtime}`,
+          `mode: ${fileMode}`
+        ].join(CRLF) + CRLF
+      })
     })
   })
 

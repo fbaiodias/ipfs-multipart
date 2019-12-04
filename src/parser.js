@@ -45,55 +45,51 @@ const ignore = async (stream) => {
 }
 
 async function * parseEntry (stream, options) {
-  let entry = {}
-
   for await (const part of stream) {
-    let type
+    if (!part.headers['content-type']) {
+      throw new Error('No content-type in multipart part')
+    }
 
-    if (part.headers['content-type']) {
-      type = Content.type(part.headers['content-type'])
+    const type = Content.type(part.headers['content-type'])
 
-      if (type.boundary) {
-        // recursively parse nested multiparts
-        yield * parser(part.body, {
-          ...options,
-          boundary: type.boundary
-        })
+    if (type.boundary) {
+      // recursively parse nested multiparts
+      yield * parser(part.body, {
+        ...options,
+        boundary: type.boundary
+      })
 
-        continue
-      }
+      continue
     }
 
     if (!part.headers['content-disposition']) {
       throw new Error('No content disposition in multipart part')
     }
 
+    const entry = {}
+
+    if (part.headers.mtime) {
+      entry.mtime = parseInt(part.headers.mtime, 10)
+    }
+
+    if (part.headers.mode) {
+      entry.mode = parseInt(part.headers.mode, 8)
+    }
+
+    if (isDirectory(type.mime)) {
+      entry.type = 'directory'
+    } else if (type.mime === applicationSymlink) {
+      entry.type = 'symlink'
+    } else {
+      entry.type = 'file'
+    }
+
     const disposition = parseDisposition(part.headers['content-disposition'])
 
-    if (disposition.name.includes('mtime')) {
-      entry.mtime = parseInt((await collect(part.body)).toString('utf8'), 10)
-    }
+    entry.name = decodeURIComponent(disposition.filename)
+    entry.body = part.body
 
-    if (disposition.name.includes('mode')) {
-      entry.mode = parseInt((await collect(part.body)).toString('utf8'), 10)
-    }
-
-    if (type) {
-      if (isDirectory(type.mime)) {
-        entry.type = 'directory'
-      } else if (type.mime === applicationSymlink) {
-        entry.type = 'symlink'
-      } else {
-        entry.type = 'file'
-      }
-
-      entry.name = decodeURIComponent(disposition.filename)
-      entry.body = part.body
-
-      yield entry
-
-      entry = {}
-    }
+    yield entry
   }
 }
 
