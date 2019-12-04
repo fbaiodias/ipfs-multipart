@@ -122,10 +122,10 @@ describe('parser', () => {
         file: {
           value: fileContent,
           options: {
-           header: {
-             mtime: fileMtime,
-             mode: fileMode
-           }
+            header: {
+              mtime: fileMtime,
+              mode: fileMode
+            }
           }
         }
       }
