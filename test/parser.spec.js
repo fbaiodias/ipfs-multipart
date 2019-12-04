@@ -118,20 +118,19 @@ describe('parser', () => {
     })
 
     it('parses multipart requests with metatdata correctly', (done) => {
-      const r = request.post({ url: `http://localhost:${PORT}` }, (err) => done(err))
+      const formData = {
+        file: {
+          value: fileContent,
+          options: {
+           header: {
+             mtime: fileMtime,
+             mode: fileMode
+           }
+          }
+        }
+      }
 
-      // request uses an old version of form-data so this is clunky
-      const CRLF = '\r\n'
-      const form = r.form()
-      form.append('file', fileContent, {
-        header: [
-          `--${form.getBoundary()}`,
-          'content-type: application/octet-stream',
-          'content-disposition: form-data; filename="file.txt"; name="file"',
-          `mtime: ${fileMtime}`,
-          `mode: ${fileMode}`
-        ].join(CRLF) + CRLF
-      })
+      request.post({ url: `http://localhost:${PORT}`, formData }, (err) => done(err))
     })
   })
 
