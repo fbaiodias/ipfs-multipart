@@ -27,7 +27,7 @@ const readDir = (path, prefix, includeMetadata, output = []) => {
 
       output.push({
         path: `${prefix}/${entry}`,
-        mtime: includeMetadata ? parseInt(type.mtimeMs / 1000) : undefined,
+        mtime: includeMetadata ? new Date(type.mtimeMs) : undefined,
         mode: includeMetadata ? type.mode : undefined
       })
     }
@@ -36,7 +36,7 @@ const readDir = (path, prefix, includeMetadata, output = []) => {
       output.push({
         path: `${prefix}/${entry}`,
         content: fs.createReadStream(entryPath),
-        mtime: includeMetadata ? parseInt(type.mtimeMs / 1000) : undefined,
+        mtime: includeMetadata ? new Date(type.mtimeMs) : undefined,
         mode: includeMetadata ? type.mode : undefined
       })
     }
@@ -191,9 +191,15 @@ describe('parser', () => {
       expect(files).to.have.lengthOf(contents.length)
 
       for (let i = 0; i < contents.length; i++) {
+        const msecs = contents[i].mtime.getTime()
+        const secs = Math.floor(msecs / 1000)
+
         expect(files[i].name).to.equal(contents[i].path)
         expect(files[i].mode).to.equal(contents[i].mode)
-        expect(files[i].mtime).to.equal(contents[i].mtime)
+        expect(files[i].mtime).to.deep.equal({
+          secs,
+          nsecs: (msecs - (secs * 1000)) * 1000
+        })
       }
     })
   })

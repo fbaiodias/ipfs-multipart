@@ -69,7 +69,13 @@ async function * parseEntry (stream, options) {
     const entry = {}
 
     if (part.headers.mtime) {
-      entry.mtime = parseInt(part.headers.mtime, 10)
+      entry.mtime = {
+        secs: parseInt(part.headers.mtime, 10)
+      }
+
+      if (part.headers['mtime-nsecs']) {
+        entry.mtime.nsecs = parseInt(part.headers['mtime-nsecs'], 10)
+      }
     }
 
     if (part.headers.mode) {
