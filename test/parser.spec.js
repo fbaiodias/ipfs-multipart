@@ -117,7 +117,7 @@ describe('parser', () => {
       request.post({ url: `http://localhost:${PORT}`, formData: formData }, (err) => done(err))
     })
 
-    it('parses multipart requests with metatdata correctly', (done) => {
+    it('parses multipart requests with metadata correctly', (done) => {
       const formData = {
         file: {
           value: fileContent,
