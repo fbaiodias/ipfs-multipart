@@ -20,8 +20,8 @@ ipfs-multipart
 [Hugo Dias](https://github.com/hugomrdias)
 
 ### Notice 
-> This module is moving to async iterators starting from 0.2.0.   
-> The last minor version to support event emitter is 0.1.1, any backports will merged to the branch `event-emitter` and released under  `>0.1.0 <0.2.0`.
+> This module moved to async iterators in version `0.2.0`.   
+> The last minor version to support event emitter is `0.1.1`. Any backports will be merged into the branch `event-emitter` and released under `>0.1.0 <0.2.0`.
 
 ## Install
 ```
