@@ -1,3 +1,9 @@
+# 🔒 Archived <!-- omit in toc -->
+
+The contents of this repo have been merged into [ipfs/js-ipfs](https://github.com/ipfs/js-ipfs).
+
+Please open [issues](https://github.com/ipfs/js-ipfs/issues) or submit [PRs](https://github.com/ipfs/js-ipfs/pulls) there.
+
 ipfs-multipart
 ====
 
@@ -19,8 +25,8 @@ ipfs-multipart
 
 [Hugo Dias](https://github.com/hugomrdias)
 
-### Notice 
-> This module is moving to async iterators starting from 0.2.0.   
+### Notice
+> This module is moving to async iterators starting from 0.2.0.
 > The last minor version to support event emitter is 0.1.1, any backports will merged to the branch `event-emitter` and released under  `>0.1.0 <0.2.0`.
 
 ## Install
